@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Kodi Addons</title>
-    <meta name="description" content="Addons e repositórios para Kodi">
 
     <style>
         * {
@@ -14,143 +13,107 @@
 
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-                         Roboto, Helvetica, Arial, sans-serif;
-            background: #f7f7f8;
-            color: #222;
-        }
-
-        header {
             background: #ffffff;
-            border-bottom: 1px solid #e5e5e5;
+            color: #222;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
-        .header-inner {
+        .container {
             max-width: 900px;
             margin: 0 auto;
-            padding: 28px 20px;
+            padding: 45px 20px;
         }
 
-        .logo {
-            font-size: 22px;
+        h1 {
+            margin: 0;
+            font-size: 24px;
             font-weight: 600;
-            color: #111;
         }
 
         .subtitle {
-            margin-top: 5px;
+            margin-top: 7px;
+            margin-bottom: 35px;
             color: #777;
             font-size: 14px;
         }
 
-        main {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 35px 20px 60px;
-        }
-
         .search {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .search input {
             width: 100%;
-            padding: 13px 15px;
-            border: 1px solid #dcdcdc;
-            border-radius: 8px;
-            background: #fff;
-            font-size: 15px;
+            padding: 11px 13px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fafafa;
+            font-size: 14px;
             outline: none;
         }
 
         .search input:focus {
-            border-color: #999;
+            border-color: #aaa;
+            background: #fff;
         }
 
-        .addons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .list {
+            border-top: 1px solid #ddd;
         }
 
-        .addon {
+        .row {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 20px;
 
-            background: #ffffff;
-            border: 1px solid #e5e5e5;
-            border-radius: 8px;
-            padding: 17px 18px;
+            padding: 14px 4px;
+
+            border-bottom: 1px solid #e5e5e5;
         }
 
-        .addon-info {
-            min-width: 0;
-        }
-
-        .addon-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: #222;
-            margin-bottom: 5px;
-        }
-
-        .addon-file {
-            color: #888;
-            font-size: 13px;
+        .filename {
+            color: #333;
+            font-size: 14px;
             word-break: break-all;
         }
 
         .download {
             flex-shrink: 0;
 
-            display: inline-block;
-            padding: 9px 14px;
-
-            border: 1px solid #d5d5d5;
-            border-radius: 6px;
-
-            background: #fff;
-            color: #333;
-
+            color: #666;
             text-decoration: none;
             font-size: 13px;
-            font-weight: 500;
         }
 
         .download:hover {
-            background: #f3f3f3;
+            color: #000;
+            text-decoration: underline;
         }
 
         .status {
-            text-align: center;
-            padding: 30px;
+            padding: 25px 0;
             color: #888;
             font-size: 14px;
         }
 
         footer {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 20px 30px;
-
-            color: #999;
+            margin-top: 40px;
+            color: #aaa;
             font-size: 12px;
         }
 
         @media (max-width: 600px) {
 
-            .addon {
+            .container {
+                padding: 30px 15px;
+            }
+
+            .row {
                 align-items: flex-start;
             }
 
             .download {
-                margin-top: 2px;
-            }
-
-            .addon-name {
-                font-size: 15px;
+                white-space: nowrap;
             }
 
         }
@@ -159,20 +122,19 @@
 
 <body>
 
-<header>
-    <div class="header-inner">
-        <div class="logo">Kodi Addons</div>
-        <div class="subtitle">Addons e repositórios para Kodi</div>
-    </div>
-</header>
+<div class="container">
 
-<main>
+    <h1>Kodi Addons</h1>
+
+    <div class="subtitle">
+        Addons e repositórios para Kodi
+    </div>
 
     <div class="search">
         <input
             type="search"
             id="search"
-            placeholder="Pesquisar..."
+            placeholder="Pesquisar ficheiros..."
             autocomplete="off"
         >
     </div>
@@ -181,13 +143,13 @@
         A carregar...
     </div>
 
-    <div id="addons" class="addons"></div>
+    <div id="list" class="list"></div>
 
-</main>
+    <footer>
+        Kodi Addons
+    </footer>
 
-<footer>
-    Kodi Addons
-</footer>
+</div>
 
 
 <script>
@@ -198,85 +160,98 @@ const REPOSITORY = "kodi";
 const API_URL =
     `https://api.github.com/repos/${USER}/${REPOSITORY}/contents/`;
 
-const addonsContainer =
-    document.getElementById("addons");
+const list = document.getElementById("list");
+const status = document.getElementById("status");
+const search = document.getElementById("search");
 
-const status =
-    document.getElementById("status");
-
-const search =
-    document.getElementById("search");
-
-let addons = [];
+let files = [];
 
 
-/* Nome apresentado no site */
+/* Carregar ficheiros */
 
-function getAddonName(filename) {
+async function loadFiles() {
 
-    let name = filename
-        .replace(/\.zip$/i, "")
-        .replace(/^repository\./i, "")
-        .replace(/^plugin\./i, "");
+    try {
 
-    name = name.replace(/[._-]+/g, " ");
+        const response = await fetch(API_URL);
 
-    return name
-        .split(" ")
-        .map(word =>
-            word.charAt(0).toUpperCase() + word.slice(1)
-        )
-        .join(" ");
+        if (!response.ok) {
+            throw new Error("Erro ao consultar o GitHub");
+        }
+
+        const data = await response.json();
+
+        files = data
+            .filter(file =>
+                file.type === "file" &&
+                file.name.toLowerCase().endsWith(".zip")
+            )
+            .sort((a, b) =>
+                a.name.localeCompare(b.name)
+            );
+
+        status.style.display = "none";
+
+        renderFiles();
+
+    }
+
+    catch (error) {
+
+        status.textContent =
+            "Não foi possível carregar os ficheiros.";
+
+        console.error(error);
+
+    }
+
 }
 
 
-/* Mostrar addons */
+/* Mostrar ficheiros */
 
-function renderAddons(filter = "") {
+function renderFiles(filter = "") {
 
-    addonsContainer.innerHTML = "";
+    list.innerHTML = "";
 
-    const filtered = addons.filter(addon =>
-        addon.name.toLowerCase().includes(filter.toLowerCase()) ||
-        addon.filename.toLowerCase().includes(filter.toLowerCase())
+    const filtered = files.filter(file =>
+        file.name.toLowerCase().includes(
+            filter.toLowerCase()
+        )
     );
 
 
     if (filtered.length === 0) {
 
-        addonsContainer.innerHTML = `
+        list.innerHTML = `
             <div class="status">
-                Nenhum addon encontrado.
+                Nenhum ficheiro encontrado.
             </div>
         `;
 
         return;
+
     }
 
 
-    filtered.forEach(addon => {
+    filtered.forEach(file => {
 
-        const element = document.createElement("div");
+        const row = document.createElement("div");
 
-        element.className = "addon";
+        row.className = "row";
 
-        element.innerHTML = `
+        const url =
+            `https://${USER}.github.io/${REPOSITORY}/${encodeURIComponent(file.name)}`;
 
-            <div class="addon-info">
+        row.innerHTML = `
 
-                <div class="addon-name">
-                    ${addon.name}
-                </div>
-
-                <div class="addon-file">
-                    ${addon.filename}
-                </div>
-
+            <div class="filename">
+                ${file.name}
             </div>
 
             <a
                 class="download"
-                href="${addon.url}"
+                href="${url}"
                 download
             >
                 Download
@@ -284,57 +259,10 @@ function renderAddons(filter = "") {
 
         `;
 
-        addonsContainer.appendChild(element);
+        list.appendChild(row);
 
     });
-}
 
-
-/* Obter ZIPs do GitHub */
-
-async function loadAddons() {
-
-    try {
-
-        const response = await fetch(API_URL);
-
-        if (!response.ok) {
-            throw new Error("Erro ao consultar GitHub");
-        }
-
-        const files = await response.json();
-
-
-        addons = files
-            .filter(file =>
-                file.type === "file" &&
-                file.name.toLowerCase().endsWith(".zip")
-            )
-            .map(file => ({
-
-                filename: file.name,
-
-                name: getAddonName(file.name),
-
-                url:
-                    `https://${USER}.github.io/${REPOSITORY}/${encodeURIComponent(file.name)}`
-            }));
-
-
-        status.style.display = "none";
-
-        renderAddons();
-
-    }
-
-    catch (error) {
-
-        status.innerHTML =
-            "Não foi possível carregar os addons.";
-
-        console.error(error);
-
-    }
 }
 
 
@@ -342,14 +270,14 @@ async function loadAddons() {
 
 search.addEventListener("input", function () {
 
-    renderAddons(this.value);
+    renderFiles(this.value);
 
 });
 
 
 /* Iniciar */
 
-loadAddons();
+loadFiles();
 
 </script>
 
