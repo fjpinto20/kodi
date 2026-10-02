@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Kodi Addons</title>
-    <meta name="description" content="Repositório de addons para Kodi">
+    <meta name="description" content="Addons e repositórios para Kodi">
 
     <style>
         * {
@@ -14,157 +14,145 @@
 
         body {
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background:
-                radial-gradient(circle at top, #1e3a5f 0%, #111827 45%, #080c14 100%);
-            color: #ffffff;
-            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                         Roboto, Helvetica, Arial, sans-serif;
+            background: #f7f7f8;
+            color: #222;
         }
 
         header {
-            text-align: center;
-            padding: 70px 20px 45px;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e5e5;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 46px;
-            font-weight: 700;
-            letter-spacing: -1px;
-        }
-
-        header p {
-            margin: 14px 0 0;
-            color: #9ca3af;
-            font-size: 18px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1000px;
+        .header-inner {
+            max-width: 900px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 28px 20px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .subtitle {
+            margin-top: 5px;
+            color: #777;
+            font-size: 14px;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 35px 20px 60px;
         }
 
         .search {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .search input {
             width: 100%;
-            padding: 16px 18px;
-            border-radius: 12px;
-            border: 1px solid #374151;
-            background: rgba(31, 41, 55, 0.85);
-            color: #ffffff;
-            font-size: 16px;
+            padding: 13px 15px;
+            border: 1px solid #dcdcdc;
+            border-radius: 8px;
+            background: #fff;
+            font-size: 15px;
             outline: none;
         }
 
         .search input:focus {
-            border-color: #3b82f6;
+            border-color: #999;
         }
 
-        .search input::placeholder {
-            color: #6b7280;
+        .addons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: rgba(31, 41, 55, 0.92);
-            border: 1px solid #374151;
-            border-radius: 16px;
-            padding: 24px;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-3px);
-            border-color: #4b5563;
-        }
-
-        .icon {
-            width: 52px;
-            height: 52px;
+        .addon {
             display: flex;
             align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            background: #2563eb;
-            font-size: 24px;
-            margin-bottom: 18px;
+            justify-content: space-between;
+            gap: 20px;
+
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 17px 18px;
         }
 
-        .card h2 {
-            margin: 0 0 8px;
-            font-size: 21px;
+        .addon-info {
+            min-width: 0;
         }
 
-        .filename {
-            color: #9ca3af;
+        .addon-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 5px;
+        }
+
+        .addon-file {
+            color: #888;
             font-size: 13px;
             word-break: break-all;
-            margin-bottom: 16px;
-        }
-
-        .description {
-            color: #d1d5db;
-            line-height: 1.5;
-            margin-bottom: 22px;
         }
 
         .download {
-            display: block;
-            width: 100%;
-            padding: 13px;
-            border-radius: 9px;
-            background: #2563eb;
-            color: #ffffff;
+            flex-shrink: 0;
+
+            display: inline-block;
+            padding: 9px 14px;
+
+            border: 1px solid #d5d5d5;
+            border-radius: 6px;
+
+            background: #fff;
+            color: #333;
+
             text-decoration: none;
-            text-align: center;
-            font-weight: 600;
-            transition: background 0.2s ease;
+            font-size: 13px;
+            font-weight: 500;
         }
 
         .download:hover {
-            background: #1d4ed8;
+            background: #f3f3f3;
         }
 
-        .empty {
-            display: none;
+        .status {
             text-align: center;
-            padding: 40px 20px;
-            color: #9ca3af;
-        }
-
-        footer {
-            text-align: center;
-            padding: 60px 20px 35px;
-            color: #6b7280;
+            padding: 30px;
+            color: #888;
             font-size: 14px;
         }
 
+        footer {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 30px;
+
+            color: #999;
+            font-size: 12px;
+        }
+
         @media (max-width: 600px) {
-            header {
-                padding: 50px 20px 35px;
+
+            .addon {
+                align-items: flex-start;
             }
 
-            header h1 {
-                font-size: 36px;
+            .download {
+                margin-top: 2px;
             }
 
-            header p {
-                font-size: 16px;
+            .addon-name {
+                font-size: 15px;
             }
 
-            .container {
-                padding: 15px;
-            }
         }
     </style>
 </head>
@@ -172,54 +160,28 @@
 <body>
 
 <header>
-    <h1>Kodi Addons</h1>
-    <p>Downloads de addons para Kodi</p>
+    <div class="header-inner">
+        <div class="logo">Kodi Addons</div>
+        <div class="subtitle">Addons e repositórios para Kodi</div>
+    </div>
 </header>
 
-<main class="container">
+<main>
 
     <div class="search">
         <input
             type="search"
             id="search"
-            placeholder="Pesquisar addon..."
+            placeholder="Pesquisar..."
             autocomplete="off"
         >
     </div>
 
-    <div class="grid" id="addons">
-
-        <div class="card" data-name="repository.acestream-channels">
-
-            <div class="icon">
-                K
-            </div>
-
-            <h2>Acestream Channels</h2>
-
-            <div class="filename">
-                repository.acestream-channels.zip
-            </div>
-
-            <div class="description">
-                Repositório do addon Acestream Channels para Kodi.
-            </div>
-
-            <a
-                class="download"
-                href="repository.acestream-channels.zip"
-                download
-            >
-                Download ZIP
-            </a>
-
-        </div>
-
+    <div id="status" class="status">
+        A carregar...
     </div>
 
-    <div class="empty" id="empty">
-        Nenhum addon encontrado.
-    </div>
+    <div id="addons" class="addons"></div>
 
 </main>
 
@@ -227,32 +189,168 @@
     Kodi Addons
 </footer>
 
+
 <script>
-    const search = document.getElementById("search");
-    const cards = document.querySelectorAll(".card");
-    const empty = document.getElementById("empty");
 
-    search.addEventListener("input", function () {
+const USER = "fjpinto20";
+const REPOSITORY = "kodi";
 
-        const query = this.value.toLowerCase().trim();
-        let visible = 0;
+const API_URL =
+    `https://api.github.com/repos/${USER}/${REPOSITORY}/contents/`;
 
-        cards.forEach(function (card) {
+const addonsContainer =
+    document.getElementById("addons");
 
-            const name = card.dataset.name.toLowerCase();
+const status =
+    document.getElementById("status");
 
-            if (name.includes(query)) {
-                card.style.display = "";
-                visible++;
-            } else {
-                card.style.display = "none";
-            }
+const search =
+    document.getElementById("search");
 
-        });
+let addons = [];
 
-        empty.style.display = visible === 0 ? "block" : "none";
+
+/* Nome apresentado no site */
+
+function getAddonName(filename) {
+
+    let name = filename
+        .replace(/\.zip$/i, "")
+        .replace(/^repository\./i, "")
+        .replace(/^plugin\./i, "");
+
+    name = name.replace(/[._-]+/g, " ");
+
+    return name
+        .split(" ")
+        .map(word =>
+            word.charAt(0).toUpperCase() + word.slice(1)
+        )
+        .join(" ");
+}
+
+
+/* Mostrar addons */
+
+function renderAddons(filter = "") {
+
+    addonsContainer.innerHTML = "";
+
+    const filtered = addons.filter(addon =>
+        addon.name.toLowerCase().includes(filter.toLowerCase()) ||
+        addon.filename.toLowerCase().includes(filter.toLowerCase())
+    );
+
+
+    if (filtered.length === 0) {
+
+        addonsContainer.innerHTML = `
+            <div class="status">
+                Nenhum addon encontrado.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    filtered.forEach(addon => {
+
+        const element = document.createElement("div");
+
+        element.className = "addon";
+
+        element.innerHTML = `
+
+            <div class="addon-info">
+
+                <div class="addon-name">
+                    ${addon.name}
+                </div>
+
+                <div class="addon-file">
+                    ${addon.filename}
+                </div>
+
+            </div>
+
+            <a
+                class="download"
+                href="${addon.url}"
+                download
+            >
+                Download
+            </a>
+
+        `;
+
+        addonsContainer.appendChild(element);
 
     });
+}
+
+
+/* Obter ZIPs do GitHub */
+
+async function loadAddons() {
+
+    try {
+
+        const response = await fetch(API_URL);
+
+        if (!response.ok) {
+            throw new Error("Erro ao consultar GitHub");
+        }
+
+        const files = await response.json();
+
+
+        addons = files
+            .filter(file =>
+                file.type === "file" &&
+                file.name.toLowerCase().endsWith(".zip")
+            )
+            .map(file => ({
+
+                filename: file.name,
+
+                name: getAddonName(file.name),
+
+                url:
+                    `https://${USER}.github.io/${REPOSITORY}/${encodeURIComponent(file.name)}`
+            }));
+
+
+        status.style.display = "none";
+
+        renderAddons();
+
+    }
+
+    catch (error) {
+
+        status.innerHTML =
+            "Não foi possível carregar os addons.";
+
+        console.error(error);
+
+    }
+}
+
+
+/* Pesquisa */
+
+search.addEventListener("input", function () {
+
+    renderAddons(this.value);
+
+});
+
+
+/* Iniciar */
+
+loadAddons();
+
 </script>
 
 </body>
