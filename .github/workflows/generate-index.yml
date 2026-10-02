@@ -1,0 +1,61 @@
+name: Gerar índice Kodi
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-index:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obter repositório
+        uses: actions/checkout@v4
+
+      - name: Gerar index.html
+        run: |
+          cat > index.html <<'EOF'
+          <!DOCTYPE html>
+          <html lang="pt">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Index of /kodi/</title>
+          </head>
+          <body>
+          <h1>Index of /kodi/</h1>
+          <hr>
+          <pre>
+          EOF
+
+          for file in *.zip; do
+            if [ -f "$file" ]; then
+              echo "<a href=\"$file\">$file</a>" >> index.html
+            fi
+          done
+
+          cat >> index.html <<'EOF'
+          </pre>
+          <hr>
+          </body>
+          </html>
+          EOF
+
+      - name: Guardar alterações
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add index.html
+
+          if git diff --cached --quiet; then
+            echo "Não existem alterações."
+          else
+            git commit -m "Atualizar índice de ficheiros"
+            git push
+          fi
